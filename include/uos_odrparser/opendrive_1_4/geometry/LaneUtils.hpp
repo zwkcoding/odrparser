@@ -1,0 +1,49 @@
+/*
+ * ----------------- BEGIN LICENSE BLOCK ---------------------------------
+ *
+ * Copyright (C) 2019-2021 Intel Corporation
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * ----------------- END LICENSE BLOCK -----------------------------------
+ */
+
+#pragma once
+
+#include "uos_odrparser/opendrive_1_4/types.hpp"
+#include <cmath>
+
+namespace opendrive
+{
+namespace geometry
+{
+
+enum class ContactPlace
+{
+    Overlap,
+    LeftLeft,
+    RightLeft,
+    LeftRight,
+    RightRight,
+    None
+};
+
+ContactPlace contactPlace(Lane const &leftLane, Lane const &rightLane);
+
+inline bool near(Point const &left, Point const &right,
+                 double resolution = 1e-2)
+{
+    auto diff = left - right;
+    return (fabs(diff.x) < resolution) && (fabs(diff.y) < resolution);
+}
+
+bool lanesOverlap(Lane const &leftLane, Lane const &rightLane,
+                  double const overlapMargin);
+void invertLaneAndNeighbors(LaneMap &laneMap, Lane &lane);
+void checkAddSuccessor(Lane &lane, Lane const &otherLane);
+void checkAddPredecessor(Lane &lane, Lane const &otherLane);
+
+Id laneId(int roadId, int laneSectionIndex, int laneIndex);
+Id laneId(int roadId, uint64_t laneSectionIndex, int laneIndex);
+} // namespace geometry
+} // namespace opendrive

@@ -1,0 +1,16 @@
+# ref: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+Language: Cpp
+Standard: Cpp11
+# We'll use defaults from the LLVM style, but with 4 columns indentation.
+BasedOnStyle: LLVM
+IndentWidth: 4
+# # Force pointers to the variable for C++.
+DerivePointerAlignment: false
+PointerAlignment: Right
+# no columns limit.
+ColumnLimit: 80
+# The extra indent or outdent of access modifiers, e.g. public:.
+AccessModifierOffset: -4
+NamespaceIndentation: None
+BreakBeforeBraces: Allman
+IndentCaseLabels: true
