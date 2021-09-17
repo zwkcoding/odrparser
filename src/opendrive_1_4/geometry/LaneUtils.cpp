@@ -14,7 +14,7 @@
 #include <inttypes.h>
 #include <vector>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace geometry
 {
@@ -333,4 +333,4 @@ bool lanesOverlap(Lane const &leftLane, Lane const &rightLane,
     }
 }
 } // namespace geometry
-} // namespace opendrive
+} // namespace opendrive_1_4

@@ -15,7 +15,7 @@
 #include <list>
 #include <map>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace geometry
 {
@@ -66,4 +66,4 @@ private:
 };
 
 } // namespace geometry
-} // namespace opendrive
+} // namespace opendrive_1_4

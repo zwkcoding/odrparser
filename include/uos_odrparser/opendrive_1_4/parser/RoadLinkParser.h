@@ -16,7 +16,7 @@
 
 #include <pugixml.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
@@ -25,11 +25,11 @@ class RoadLinkParser
 {
 private:
     void ParseLink(const pugi::xml_node &xmlNode,
-                   opendrive::RoadLinkInformation *out_link_information);
+                   opendrive_1_4::RoadLinkInformation *out_link_information);
 
 public:
     static void Parse(const pugi::xml_node &xmlNode,
-                      opendrive::RoadLink &out_road_link);
+                      opendrive_1_4::RoadLink &out_road_link);
 };
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

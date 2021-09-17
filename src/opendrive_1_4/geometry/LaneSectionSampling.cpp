@@ -12,7 +12,7 @@
 #include <boost/math/tools/rational.hpp>
 #include <inttypes.h>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace geometry
 {
@@ -453,4 +453,4 @@ void LaneSectionSampling::writeLaneMap(LaneMap &laneMap)
 }
 
 } // namespace geometry
-} // namespace opendrive
+} // namespace opendrive_1_4

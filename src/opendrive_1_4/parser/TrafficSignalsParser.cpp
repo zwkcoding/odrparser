@@ -27,7 +27,8 @@ double assignDefaultValues(std::string const &s, double const defaultValue)
     return output;
 }
 
-opendrive::Validity opendrive::parser::TrafficSignalsParser::AddValidity(
+opendrive_1_4::Validity
+opendrive_1_4::parser::TrafficSignalsParser::AddValidity(
     const pugi::xml_node &parent_node, const std::string &node_name)
 {
     const pugi::xml_node validityNode = parent_node.child(node_name.c_str());
@@ -42,16 +43,16 @@ opendrive::Validity opendrive::parser::TrafficSignalsParser::AddValidity(
     return validityInfo;
 }
 
-void opendrive::parser::TrafficSignalsParser::Parse(
+void opendrive_1_4::parser::TrafficSignalsParser::Parse(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::TrafficSignalInformation> &out_traffic_signals,
-    std::vector<opendrive::TrafficSignalReference>
+    std::vector<opendrive_1_4::TrafficSignalInformation> &out_traffic_signals,
+    std::vector<opendrive_1_4::TrafficSignalReference>
         &out_traffic_signal_references)
 {
     for (pugi::xml_node signal = xmlNode.child("signal"); signal;
          signal = signal.next_sibling("signal"))
     {
-        opendrive::TrafficSignalInformation trafficSignalInformation;
+        opendrive_1_4::TrafficSignalInformation trafficSignalInformation;
 
         trafficSignalInformation.id = std::stoi(signal.attribute("id").value());
 
@@ -109,7 +110,7 @@ void opendrive::parser::TrafficSignalsParser::Parse(
 
         for (pugi::xml_node dependency_node : signal.children("dependency"))
         {
-            opendrive::TrafficSignalDependency dependency;
+            opendrive_1_4::TrafficSignalDependency dependency;
             dependency.dependent_signal_id =
                 std::stoi(dependency_node.attribute("id").value());
             dependency.type = dependency_node.attribute("type").value();
@@ -160,7 +161,7 @@ void opendrive::parser::TrafficSignalsParser::Parse(
     for (pugi::xml_node signal = xmlNode.child("signalReference"); signal;
          signal = signal.next_sibling("signalReference"))
     {
-        opendrive::TrafficSignalReference trafficSignalReference;
+        opendrive_1_4::TrafficSignalReference trafficSignalReference;
 
         trafficSignalReference.id = std::stoi(signal.attribute("id").value());
         trafficSignalReference.start_position =

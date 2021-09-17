@@ -15,7 +15,7 @@
 #include "uos_odrparser/opendrive_1_4/types.hpp"
 #include <string>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
@@ -23,9 +23,9 @@ namespace parser
 class GeoReferenceParser
 {
 public:
-    static ::opendrive::geom::GeoLocation
+    static ::opendrive_1_4::geom::GeoLocation
     Parse(const std::string &geo_reference_string);
 };
 
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

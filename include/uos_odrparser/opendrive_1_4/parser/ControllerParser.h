@@ -14,7 +14,7 @@
 
 #include <pugixml.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
@@ -24,9 +24,9 @@ class ControllerParser
 public:
     static void
     Parse(const pugi::xml_node &xmlNode,
-          std::vector<opendrive::Controller> &out_controllers,
-          std::vector<opendrive::ControllerSignal> &out_controller_signals);
+          std::vector<opendrive_1_4::Controller> &out_controllers,
+          std::vector<opendrive_1_4::ControllerSignal> &out_controller_signals);
 };
 
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

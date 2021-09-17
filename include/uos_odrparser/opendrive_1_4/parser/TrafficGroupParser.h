@@ -16,7 +16,7 @@
 
 #include <pugixml.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
@@ -24,18 +24,18 @@ namespace parser
 class TrafficGroupParser
 {
 private:
-    void
-    ParseTrafficLight(const pugi::xml_node &xmlNode,
-                      std::vector<opendrive::TrafficLight> &out_trafficLights);
+    void ParseTrafficLight(
+        const pugi::xml_node &xmlNode,
+        std::vector<opendrive_1_4::TrafficLight> &out_trafficLights);
 
     void ParseBoxAreas(const pugi::xml_node &xmlNode,
-                       std::vector<opendrive::BoxComponent> &out_boxareas);
+                       std::vector<opendrive_1_4::BoxComponent> &out_boxareas);
 
 public:
     static void
     Parse(const pugi::xml_node &xmlNode,
-          std::vector<opendrive::TrafficLightGroup> &out_trafficlightgroup);
+          std::vector<opendrive_1_4::TrafficLightGroup> &out_trafficlightgroup);
 };
 
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

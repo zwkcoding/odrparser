@@ -16,7 +16,7 @@
 #include <cmath>
 #include <iostream>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace geometry
 {
@@ -70,10 +70,10 @@ std::list<double> CenterLine::samplingPoints() const
 
     for (auto it = geometry.rbegin(); it != geometry.rend(); it++)
     {
-        if ((*it)->GetType() == ::opendrive::GeometryType::ARC)
+        if ((*it)->GetType() == ::opendrive_1_4::GeometryType::ARC)
         {
-            auto arc =
-                static_cast<::opendrive::geometry::GeometryArc *>((*it).get());
+            auto arc = static_cast<::opendrive_1_4::geometry::GeometryArc *>(
+                (*it).get());
             double theta = fabs(arc->GetCurvature()) * (*it)->GetLength();
 
             if (theta < 1e-2)
@@ -171,7 +171,7 @@ bool generateCenterLine(RoadInformation &roadInfo, CenterLine &centerLine)
         {
             switch (geometry_attribute->type)
             {
-                case ::opendrive::GeometryType::ARC:
+                case ::opendrive_1_4::GeometryType::ARC:
                 {
                     auto arc = static_cast<GeometryAttributesArc *>(
                         geometry_attribute.get());
@@ -181,7 +181,7 @@ bool generateCenterLine(RoadInformation &roadInfo, CenterLine &centerLine)
                             start, arc->curvature));
                     break;
                 }
-                case ::opendrive::GeometryType::LINE:
+                case ::opendrive_1_4::GeometryType::LINE:
                 {
                     auto line = static_cast<GeometryAttributesLine *>(
                         geometry_attribute.get());
@@ -192,7 +192,7 @@ bool generateCenterLine(RoadInformation &roadInfo, CenterLine &centerLine)
                     break;
                 }
                 break;
-                case ::opendrive::GeometryType::SPIRAL:
+                case ::opendrive_1_4::GeometryType::SPIRAL:
                 {
                     // currently not yet supported
                     printf("generateCenterLine() spirals are currently not "
@@ -201,7 +201,7 @@ bool generateCenterLine(RoadInformation &roadInfo, CenterLine &centerLine)
                     break;
                 }
                 break;
-                case ::opendrive::GeometryType::POLY3:
+                case ::opendrive_1_4::GeometryType::POLY3:
                 {
                     auto poly3 = static_cast<GeometryAttributesPoly3 *>(
                         geometry_attribute.get());
@@ -213,7 +213,7 @@ bool generateCenterLine(RoadInformation &roadInfo, CenterLine &centerLine)
                     break;
                 }
                 break;
-                case ::opendrive::GeometryType::PARAMPOLY3:
+                case ::opendrive_1_4::GeometryType::PARAMPOLY3:
                 {
                     auto paramPoly3 =
                         static_cast<GeometryAttributesParamPoly3 *>(
@@ -243,4 +243,4 @@ bool generateCenterLine(RoadInformation &roadInfo, CenterLine &centerLine)
     return ok;
 }
 } // namespace geometry
-} // namespace opendrive
+} // namespace opendrive_1_4

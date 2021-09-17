@@ -16,7 +16,7 @@
 
 #include <pugixml.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
@@ -25,26 +25,27 @@ class GeometryParser
 {
 private:
     void ParseArc(const pugi::xml_node &xmlNode,
-                  opendrive::GeometryAttributesArc *out_geometry_arc);
+                  opendrive_1_4::GeometryAttributesArc *out_geometry_arc);
 
     void ParseLine(const pugi::xml_node &xmlNode,
-                   opendrive::GeometryAttributesLine *out_geometry_line);
+                   opendrive_1_4::GeometryAttributesLine *out_geometry_line);
 
-    void ParseSpiral(const pugi::xml_node &xmlNode,
-                     opendrive::GeometryAttributesSpiral *out_geometry_spiral);
+    void
+    ParseSpiral(const pugi::xml_node &xmlNode,
+                opendrive_1_4::GeometryAttributesSpiral *out_geometry_spiral);
 
     void ParsePoly3(const pugi::xml_node &xmlNode,
-                    opendrive::GeometryAttributesPoly3 *out_geometry_poly3);
+                    opendrive_1_4::GeometryAttributesPoly3 *out_geometry_poly3);
 
     void ParseParamPoly3(
         const pugi::xml_node &xmlNode,
-        opendrive::GeometryAttributesParamPoly3 *out_geometry_param_poly3);
+        opendrive_1_4::GeometryAttributesParamPoly3 *out_geometry_param_poly3);
 
 public:
     static void
     Parse(const pugi::xml_node &xmlNode,
-          std::vector<std::unique_ptr<opendrive::GeometryAttributes>>
+          std::vector<std::unique_ptr<opendrive_1_4::GeometryAttributes>>
               &out_geometry_attributes);
 };
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

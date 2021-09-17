@@ -14,37 +14,37 @@
 
 #include <cstdlib>
 
-opendrive::ElementType toElementType(std::string const elementType)
+opendrive_1_4::ElementType toElementType(std::string const elementType)
 {
     if (elementType == "junction")
     {
-        return opendrive::ElementType::Junction;
+        return opendrive_1_4::ElementType::Junction;
     }
     else if (elementType == "road")
     {
-        return opendrive::ElementType::Road;
+        return opendrive_1_4::ElementType::Road;
     }
 
-    return opendrive::ElementType::Invalid;
+    return opendrive_1_4::ElementType::Invalid;
 }
 
-opendrive::ContactPoint toContactPoint(std::string const contactPoint)
+opendrive_1_4::ContactPoint toContactPoint(std::string const contactPoint)
 {
     if (contactPoint == "start")
     {
-        return opendrive::ContactPoint::Start;
+        return opendrive_1_4::ContactPoint::Start;
     }
     else if (contactPoint == "end")
     {
-        return opendrive::ContactPoint::End;
+        return opendrive_1_4::ContactPoint::End;
     }
 
-    return opendrive::ContactPoint::Invalid;
+    return opendrive_1_4::ContactPoint::Invalid;
 }
 
-void opendrive::parser::RoadLinkParser::ParseLink(
+void opendrive_1_4::parser::RoadLinkParser::ParseLink(
     const pugi::xml_node &xmlNode,
-    opendrive::RoadLinkInformation *out_link_information)
+    opendrive_1_4::RoadLinkInformation *out_link_information)
 {
     out_link_information->id =
         std::stoi(xmlNode.attribute("elementId").value());
@@ -54,8 +54,8 @@ void opendrive::parser::RoadLinkParser::ParseLink(
         toContactPoint(xmlNode.attribute("contactPoint").value());
 }
 
-void opendrive::parser::RoadLinkParser::Parse(
-    const pugi::xml_node &xmlNode, opendrive::RoadLink &out_road_link)
+void opendrive_1_4::parser::RoadLinkParser::Parse(
+    const pugi::xml_node &xmlNode, opendrive_1_4::RoadLink &out_road_link)
 {
     RoadLinkParser parser;
 
@@ -65,14 +65,14 @@ void opendrive::parser::RoadLinkParser::Parse(
     if (predecessorNode)
     {
         out_road_link.predecessor =
-            std::make_unique<opendrive::RoadLinkInformation>();
+            std::make_unique<opendrive_1_4::RoadLinkInformation>();
         parser.ParseLink(predecessorNode, out_road_link.predecessor.get());
     }
 
     if (successorNode)
     {
         out_road_link.successor =
-            std::make_unique<opendrive::RoadLinkInformation>();
+            std::make_unique<opendrive_1_4::RoadLinkInformation>();
         parser.ParseLink(successorNode, out_road_link.successor.get());
     }
 }

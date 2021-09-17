@@ -13,12 +13,12 @@
 #include "uos_odrparser/opendrive_1_4/parser/TrafficSignParser.h"
 #include <iostream>
 
-void opendrive::parser::TrafficSignParser::Parse(
+void opendrive_1_4::parser::TrafficSignParser::Parse(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::TrafficSign> &out_trafficsigns)
+    std::vector<opendrive_1_4::TrafficSign> &out_trafficsigns)
 {
-    opendrive::parser::TrafficSignParser parser;
-    opendrive::TrafficSign trafficsign;
+    opendrive_1_4::parser::TrafficSignParser parser;
+    opendrive_1_4::TrafficSign trafficsign;
 
     trafficsign.speed = std::atoi(xmlNode.attribute("speed").value());
     trafficsign.x_pos = std::stod(xmlNode.attribute("xPos").value());
@@ -32,14 +32,14 @@ void opendrive::parser::TrafficSignParser::Parse(
     out_trafficsigns.emplace_back(trafficsign);
 }
 
-void opendrive::parser::TrafficSignParser::ParseBoxAreas(
+void opendrive_1_4::parser::TrafficSignParser::ParseBoxAreas(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::BoxComponent> &out_boxcomponent)
+    std::vector<opendrive_1_4::BoxComponent> &out_boxcomponent)
 {
     for (pugi::xml_node boxcomponent = xmlNode.child("tsBox"); boxcomponent;
          boxcomponent = boxcomponent.next_sibling("tsBox"))
     {
-        opendrive::BoxComponent jBoxComponent;
+        opendrive_1_4::BoxComponent jBoxComponent;
 
         jBoxComponent.x_pos = std::stod(boxcomponent.attribute("xPos").value());
         jBoxComponent.y_pos = std::stod(boxcomponent.attribute("yPos").value());

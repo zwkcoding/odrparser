@@ -16,7 +16,7 @@
 
 #include <pugixml.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
@@ -24,16 +24,17 @@ namespace parser
 class TrafficSignalsParser
 {
 private:
-    static opendrive::Validity AddValidity(const pugi::xml_node &parent_node,
-                                           const std::string &node_name);
+    static opendrive_1_4::Validity
+    AddValidity(const pugi::xml_node &parent_node,
+                const std::string &node_name);
 
 public:
-    static void
-    Parse(const pugi::xml_node &xmlNode,
-          std::vector<opendrive::TrafficSignalInformation> &out_traffic_signals,
-          std::vector<opendrive::TrafficSignalReference>
-              &out_traffic_signal_references);
+    static void Parse(const pugi::xml_node &xmlNode,
+                      std::vector<opendrive_1_4::TrafficSignalInformation>
+                          &out_traffic_signals,
+                      std::vector<opendrive_1_4::TrafficSignalReference>
+                          &out_traffic_signal_references);
 };
 
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

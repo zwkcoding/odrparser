@@ -1,15 +1,3 @@
-/*
- * ----------------- BEGIN LICENSE BLOCK ---------------------------------
- *
- * Copyright (c) 2017 Computer Vision Center (CVC) at the Universitat Autonoma
- * de Barcelona (UAB).
- * Copyright (C) 2019-2021 Intel Corporation
- *
- * SPDX-License-Identifier: MIT
- *
- * ----------------- END LICENSE BLOCK -----------------------------------
- */
-
 #include "uos_odrparser/opendrive_1_4/parser/OpenDriveParser.hpp"
 
 #include "uos_odrparser/opendrive_1_4/parser/ControllerParser.h"
@@ -26,16 +14,17 @@
 
 #include <pugixml.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
 
 bool OpenDriveParser::Parse(const char *xml,
-                            opendrive::OpenDriveData &out_open_drive_data,
+                            opendrive_1_4::OpenDriveData &out_open_drive_data,
                             XmlInputType inputType, std::string *out_error)
 {
-    namespace odp = opendrive::parser;
+    namespace odp = opendrive_1_4::parser;
+    int road_count;
 
     pugi::xml_document xmlDoc;
     pugi::xml_parse_result pugiParseResult;
@@ -78,7 +67,10 @@ bool OpenDriveParser::Parse(const char *xml,
         return false;
     }
 
-    auto revMinor = xmlDoc.child("header").attribute("revMinor").as_int();
+    auto revMinor = xmlDoc.child("OpenDRIVE")
+                        .child("header")
+                        .attribute("revMinor")
+                        .as_int();
     switch (revMinor)
     {
         case 4:
@@ -88,20 +80,23 @@ bool OpenDriveParser::Parse(const char *xml,
             return false;
     }
 
+    out_open_drive_data.geoReference = odp::GeoReferenceParser::Parse(
+        xmlDoc.child("OpenDRIVE").child("header").child_value("geoReference"));
+
     // Extracting road information
+    road_count = 0;
     for (pugi::xml_node road = xmlDoc.child("OpenDRIVE").child("road"); road;
          road = road.next_sibling("road"))
     {
-        opendrive::RoadInformation openDriveRoadInformation;
+        opendrive_1_4::RoadInformation openDriveRoadInformation;
 
         openDriveRoadInformation.attributes.name =
-            road.attribute("name").value();
-        openDriveRoadInformation.attributes.id =
-            std::stoi(road.attribute("id").value());
+            road.attribute("name").as_string();
+        openDriveRoadInformation.attributes.id = road.attribute("id").as_int();
         openDriveRoadInformation.attributes.length =
-            std::stod(road.attribute("length").value());
+            road.attribute("length").as_double();
         openDriveRoadInformation.attributes.junction =
-            std::stoi(road.attribute("junction").value());
+            road.attribute("junction").as_int();
 
         // types
         for (pugi::xml_node node_type : road.children("type"))
@@ -109,7 +104,7 @@ bool OpenDriveParser::Parse(const char *xml,
             RoadTypeInfo type{0.0, ""};
 
             type.s = node_type.attribute("s").as_double();
-            type.type = node_type.attribute("type").value();
+            type.type = node_type.attribute("type").as_string();
             openDriveRoadInformation.attributes.type.emplace_back(type);
 
             // speed type
@@ -119,7 +114,7 @@ bool OpenDriveParser::Parse(const char *xml,
                 RoadSpeed speed{0.0, 0.0, ""};
                 speed.s = type.s;
                 speed.max = speed_node.attribute("max").as_double();
-                speed.unit = speed_node.attribute("unit").value();
+                speed.unit = speed_node.attribute("unit").as_string();
                 openDriveRoadInformation.attributes.speed.emplace_back(speed);
             }
         }
@@ -146,6 +141,8 @@ bool OpenDriveParser::Parse(const char *xml,
 
         out_open_drive_data.roads.emplace_back(
             std::move(openDriveRoadInformation));
+        out_open_drive_data.roads_map.emplace(road.attribute("id").as_string(),
+                                              road_count++);
     }
 
     // Extracting junction information
@@ -163,10 +160,7 @@ bool OpenDriveParser::Parse(const char *xml,
                                       out_open_drive_data.trafficsigns);
     }
 
-    out_open_drive_data.geoReference = odp::GeoReferenceParser::Parse(
-        xmlDoc.child("OpenDRIVE").child("header").child_value("geoReference"));
-
     return true;
 }
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

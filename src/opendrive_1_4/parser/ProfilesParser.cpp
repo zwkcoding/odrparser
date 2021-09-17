@@ -12,19 +12,19 @@
 
 #include "uos_odrparser/opendrive_1_4/parser/ProfilesParser.h"
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
 
 void ProfilesParser::ParseElevation(
     const pugi::xml_node &xmlNode,
-    opendrive::ElevationProfileSet &out_elevation_profile)
+    opendrive_1_4::ElevationProfileSet &out_elevation_profile)
 {
     for (pugi::xml_node laneSection = xmlNode.child("elevation"); laneSection;
          laneSection = laneSection.next_sibling("elevation"))
     {
-        opendrive::ElevationProfile elevationProfile;
+        opendrive_1_4::ElevationProfile elevationProfile;
 
         elevationProfile.start_offset =
             std::stod(laneSection.attribute("s").value());
@@ -38,12 +38,12 @@ void ProfilesParser::ParseElevation(
 
 void ProfilesParser::ParseShape(
     const pugi::xml_node &xmlNode,
-    opendrive::LateralProfileShapeSetMap &out_lateral_profile_shape)
+    opendrive_1_4::LateralProfileShapeSetMap &out_lateral_profile_shape)
 {
     for (pugi::xml_node laneSection = xmlNode.child("shape"); laneSection;
          laneSection = laneSection.next_sibling("shape"))
     {
-        opendrive::LateralProfileShape lateralProfileShape;
+        opendrive_1_4::LateralProfileShape lateralProfileShape;
 
         lateralProfileShape.s_position =
             std::stod(laneSection.attribute("s").value());
@@ -59,19 +59,21 @@ void ProfilesParser::ParseShape(
         // map
         auto const insertResult = out_lateral_profile_shape.insert(
             {lateralProfileShape.s_position,
-             opendrive::LateralProfileShapeSet()});
+             opendrive_1_4::LateralProfileShapeSet()});
         insertResult.first->second.insert(lateralProfileShape);
     }
 }
 
 void ProfilesParser::ParseSuperelevation(
-    const pugi::xml_node &xmlNode, opendrive::LateralProfileSuperelevationSet
-                                       &out_lateral_profile_superelevation)
+    const pugi::xml_node &xmlNode,
+    opendrive_1_4::LateralProfileSuperelevationSet
+        &out_lateral_profile_superelevation)
 {
     for (pugi::xml_node laneSection = xmlNode.child("superelevation");
          laneSection; laneSection = laneSection.next_sibling("superelevation"))
     {
-        opendrive::LateralProfileSuperelevation lateralProfileSuperelevation;
+        opendrive_1_4::LateralProfileSuperelevation
+            lateralProfileSuperelevation;
 
         lateralProfileSuperelevation.start_offset =
             std::stod(laneSection.attribute("s").value());
@@ -88,7 +90,7 @@ void ProfilesParser::ParseSuperelevation(
 }
 
 void ProfilesParser::Parse(const pugi::xml_node &xmlNode,
-                           opendrive::RoadProfiles &out_road_profiles)
+                           opendrive_1_4::RoadProfiles &out_road_profiles)
 {
     ProfilesParser profilesParser;
 
@@ -112,4 +114,4 @@ void ProfilesParser::Parse(const pugi::xml_node &xmlNode,
 }
 
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

@@ -15,7 +15,7 @@
 #include <cctype>
 #include <string>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
@@ -130,7 +130,7 @@ bool toBool(std::string const &boolString, bool defaultValue)
 }
 
 void LaneParser::ParseLane(const pugi::xml_node &xmlNode,
-                           std::vector<opendrive::LaneInfo> &out_lane)
+                           std::vector<opendrive_1_4::LaneInfo> &out_lane)
 {
     for (pugi::xml_node lane = xmlNode.child("lane"); lane;
          lane = lane.next_sibling("lane"))
@@ -162,7 +162,7 @@ void LaneParser::ParseLane(const pugi::xml_node &xmlNode,
 }
 
 void LaneParser::ParseLaneWidth(const pugi::xml_node &xmlNode,
-                                opendrive::LaneWidthSet &out_lane_width)
+                                opendrive_1_4::LaneWidthSet &out_lane_width)
 {
     for (pugi::xml_node laneWidth = xmlNode.child("width"); laneWidth;
          laneWidth = laneWidth.next_sibling("width"))
@@ -184,13 +184,13 @@ void LaneParser::ParseLaneWidth(const pugi::xml_node &xmlNode,
 
 void LaneParser::ParseLaneLink(
     const pugi::xml_node &xmlNode,
-    std::unique_ptr<opendrive::LaneLink> &out_lane_link)
+    std::unique_ptr<opendrive_1_4::LaneLink> &out_lane_link)
 {
     const pugi::xml_node predecessorNode = xmlNode.child("predecessor");
     const pugi::xml_node successorNode = xmlNode.child("successor");
 
     out_lane_link = (predecessorNode || successorNode)
-                        ? std::make_unique<opendrive::LaneLink>()
+                        ? std::make_unique<opendrive_1_4::LaneLink>()
                         : nullptr;
     if (out_lane_link == nullptr)
     {
@@ -205,7 +205,7 @@ void LaneParser::ParseLaneLink(
 }
 
 void LaneParser::ParseLaneOffset(const pugi::xml_node &xmlNode,
-                                 opendrive::LaneOffsetSet &out_lane_offset)
+                                 opendrive_1_4::LaneOffsetSet &out_lane_offset)
 {
     LaneOffset lanesOffset;
 
@@ -220,7 +220,7 @@ void LaneParser::ParseLaneOffset(const pugi::xml_node &xmlNode,
 
 void LaneParser::ParseLaneRoadMark(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::LaneRoadMark> &out_lane_mark)
+    std::vector<opendrive_1_4::LaneRoadMark> &out_lane_mark)
 {
     for (pugi::xml_node road_mark = xmlNode.child("roadMark"); road_mark;
          road_mark = road_mark.next_sibling("roadMark"))
@@ -269,7 +269,7 @@ void LaneParser::ParseLaneRoadMark(
 
 void LaneParser::ParseLaneSpeed(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::LaneSpeed> &out_lane_speed)
+    std::vector<opendrive_1_4::LaneSpeed> &out_lane_speed)
 {
     for (pugi::xml_node laneSpeed = xmlNode.child("speed"); laneSpeed;
          laneSpeed = laneSpeed.next_sibling("speed"))
@@ -318,7 +318,7 @@ void LaneParser::Parse(const pugi::xml_node &xmlNode, Lanes &out_lanes)
 
 void LaneParser::ParseLaneRoadMarkLine(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::LaneRoadMarkLine> &out_lane_mark_line)
+    std::vector<opendrive_1_4::LaneRoadMarkLine> &out_lane_mark_line)
 {
     LaneRoadMarkLine roadMarkerLine;
     for (pugi::xml_node road_mark_line =
@@ -365,7 +365,7 @@ void LaneParser::ParseLaneRoadMarkLine(
 
 void LaneParser::ParseLaneRoadMarkType(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::LaneRoadMarkType> &out_lane_mark_type)
+    std::vector<opendrive_1_4::LaneRoadMarkType> &out_lane_mark_type)
 {
     LaneRoadMarkType roadMarkerType;
     pugi::xml_node road_mark_type = xmlNode.child("type");
@@ -384,7 +384,7 @@ void LaneParser::ParseLaneRoadMarkType(
 
 void LaneParser::ParseLaneMaterial(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::LaneMaterial> &out_lane_material)
+    std::vector<opendrive_1_4::LaneMaterial> &out_lane_material)
 {
     for (pugi::xml_node laneMaterial : xmlNode.child("material"))
     {
@@ -404,7 +404,7 @@ void LaneParser::ParseLaneMaterial(
 
 void LaneParser::ParseLaneBorder(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::LaneBorder> &out_lane_border)
+    std::vector<opendrive_1_4::LaneBorder> &out_lane_border)
 {
     for (pugi::xml_node laneBorder : xmlNode.child("border"))
     {
@@ -423,7 +423,7 @@ void LaneParser::ParseLaneBorder(
 
 void LaneParser::ParseLaneVisibility(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::LaneVisibility> &out_lane_visibility)
+    std::vector<opendrive_1_4::LaneVisibility> &out_lane_visibility)
 {
     for (pugi::xml_node laneVisibility : xmlNode.child("visibility"))
     {
@@ -446,7 +446,7 @@ void LaneParser::ParseLaneVisibility(
 
 void LaneParser::ParseLaneAccess(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::LaneAccess> &out_lane_access)
+    std::vector<opendrive_1_4::LaneAccess> &out_lane_access)
 {
     for (pugi::xml_node laneAccess : xmlNode.child("access"))
     {
@@ -462,7 +462,7 @@ void LaneParser::ParseLaneAccess(
 }
 
 void LaneParser::ParseLaneHeight(const pugi::xml_node &xmlNode,
-                                 opendrive::LaneHeightSet &out_lane_height)
+                                 opendrive_1_4::LaneHeightSet &out_lane_height)
 {
     for (pugi::xml_node laneHeight : xmlNode.child("height"))
     {
@@ -477,8 +477,9 @@ void LaneParser::ParseLaneHeight(const pugi::xml_node &xmlNode,
     }
 }
 
-void LaneParser::ParseLaneRule(const pugi::xml_node &xmlNode,
-                               std::vector<opendrive::LaneRule> &out_lane_rule)
+void LaneParser::ParseLaneRule(
+    const pugi::xml_node &xmlNode,
+    std::vector<opendrive_1_4::LaneRule> &out_lane_rule)
 {
     for (pugi::xml_node laneRule : xmlNode.child("rule"))
     {
@@ -493,4 +494,4 @@ void LaneParser::ParseLaneRule(const pugi::xml_node &xmlNode,
 }
 
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

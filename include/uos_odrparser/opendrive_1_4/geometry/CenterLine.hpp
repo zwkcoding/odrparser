@@ -15,7 +15,7 @@
 #include <list>
 #include <vector>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace geometry
 {
@@ -63,4 +63,4 @@ struct CenterLine
  */
 bool generateCenterLine(RoadInformation &roadInfo, CenterLine &centerLine);
 } // namespace geometry
-} // namespace opendrive
+} // namespace opendrive_1_4

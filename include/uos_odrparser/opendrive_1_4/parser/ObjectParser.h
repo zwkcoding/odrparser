@@ -14,7 +14,7 @@
 
 #include <pugixml.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
@@ -23,8 +23,8 @@ class ObjectParser
 {
 public:
     static void Parse(const pugi::xml_node &xmlNode,
-                      std::vector<opendrive::RoadObjects> &out_objects);
+                      std::vector<opendrive_1_4::RoadObjects> &out_objects);
 };
 
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

@@ -12,12 +12,12 @@
 
 #include "uos_odrparser/opendrive_1_4/parser/JunctionParser.h"
 
-void opendrive::parser::JunctionParser::Parse(
+void opendrive_1_4::parser::JunctionParser::Parse(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::Junction> &out_junction)
+    std::vector<opendrive_1_4::Junction> &out_junction)
 {
-    opendrive::parser::JunctionParser parser;
-    opendrive::Junction junction;
+    opendrive_1_4::parser::JunctionParser parser;
+    opendrive_1_4::Junction junction;
 
     junction.attributes.id = std::atoi(xmlNode.attribute("id").value());
     junction.attributes.name = xmlNode.attribute("name").value();
@@ -26,16 +26,16 @@ void opendrive::parser::JunctionParser::Parse(
     out_junction.emplace_back(junction);
 }
 
-void opendrive::parser::JunctionParser::ParseConnection(
+void opendrive_1_4::parser::JunctionParser::ParseConnection(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::JunctionConnection> &out_connections,
-    std::vector<opendrive::JunctionController> &out_controllers)
+    std::vector<opendrive_1_4::JunctionConnection> &out_connections,
+    std::vector<opendrive_1_4::JunctionController> &out_controllers)
 {
     for (pugi::xml_node junctionConnection = xmlNode.child("connection");
          junctionConnection;
          junctionConnection = junctionConnection.next_sibling("connection"))
     {
-        opendrive::JunctionConnection jConnection;
+        opendrive_1_4::JunctionConnection jConnection;
 
         jConnection.attributes.id =
             std::atoi(junctionConnection.attribute("id").value());
@@ -53,22 +53,22 @@ void opendrive::parser::JunctionParser::ParseConnection(
 
     for (pugi::xml_node junctionController : xmlNode.child("controller"))
     {
-        opendrive::JunctionController jController;
+        opendrive_1_4::JunctionController jController;
         jController.attributes.id =
             std::atoi(junctionController.attribute("id").value());
         out_controllers.emplace_back(jController);
     }
 }
 
-void opendrive::parser::JunctionParser::ParseLaneLink(
+void opendrive_1_4::parser::JunctionParser::ParseLaneLink(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::JunctionLaneLink> &out_lane_link)
+    std::vector<opendrive_1_4::JunctionLaneLink> &out_lane_link)
 {
     for (pugi::xml_node junctionLaneLink = xmlNode.child("laneLink");
          junctionLaneLink;
          junctionLaneLink = junctionLaneLink.next_sibling("laneLink"))
     {
-        opendrive::JunctionLaneLink jLaneLink;
+        opendrive_1_4::JunctionLaneLink jLaneLink;
 
         jLaneLink.from = std::atoi(junctionLaneLink.attribute("from").value());
         jLaneLink.to = std::atoi(junctionLaneLink.attribute("to").value());

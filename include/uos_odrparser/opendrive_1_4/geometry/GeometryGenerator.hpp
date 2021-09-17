@@ -14,7 +14,7 @@
 #include "uos_odrparser/opendrive_1_4/types.hpp"
 #include <algorithm>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace geometry
 {
@@ -26,10 +26,10 @@ const double MinimumSegmentLength = 1e-3;
  * @brief Searches a road by id. Returns a const iterator to the road.
  *
  */
-inline std::vector<::opendrive::RoadInformation>::const_iterator
-findRoad(opendrive::OpenDriveData const &mapData, int roadId)
+inline std::vector<::opendrive_1_4::RoadInformation>::const_iterator
+findRoad(opendrive_1_4::OpenDriveData const &mapData, int roadId)
 {
-    auto compare = [&roadId](::opendrive::RoadInformation const &road) {
+    auto compare = [&roadId](::opendrive_1_4::RoadInformation const &road) {
         return road.attributes.id == roadId;
     };
     return std::find_if(mapData.roads.begin(), mapData.roads.end(), compare);
@@ -39,10 +39,10 @@ findRoad(opendrive::OpenDriveData const &mapData, int roadId)
  * @brief Searches a road by id. Returns an iterator to the road.
  *
  */
-inline std::vector<::opendrive::RoadInformation>::iterator
-findRoad(opendrive::OpenDriveData &mapData, int roadId)
+inline std::vector<::opendrive_1_4::RoadInformation>::iterator
+findRoad(opendrive_1_4::OpenDriveData &mapData, int roadId)
 {
-    auto compare = [&roadId](::opendrive::RoadInformation const &road) {
+    auto compare = [&roadId](::opendrive_1_4::RoadInformation const &road) {
         return road.attributes.id == roadId;
     };
     return std::find_if(mapData.roads.begin(), mapData.roads.end(), compare);
@@ -74,7 +74,7 @@ inline double parametricPosition(double startPosition,
  * overlaps.
  *
  */
-bool GenerateGeometry(opendrive::OpenDriveData &open_drive_data,
+bool GenerateGeometry(opendrive_1_4::OpenDriveData &open_drive_data,
                       double const overlapMargin);
 } // namespace geometry
-} // namespace opendrive
+} // namespace opendrive_1_4

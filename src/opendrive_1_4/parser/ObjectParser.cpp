@@ -12,11 +12,11 @@
 
 #include "uos_odrparser/opendrive_1_4/parser/ObjectParser.h"
 
-void opendrive::parser::ObjectParser::Parse(
+void opendrive_1_4::parser::ObjectParser::Parse(
     const pugi::xml_node &xmlNode,
-    std::vector<opendrive::RoadObjects> &out_objects)
+    std::vector<opendrive_1_4::RoadObjects> &out_objects)
 {
-    opendrive::RoadObjects gRoadObjects;
+    opendrive_1_4::RoadObjects gRoadObjects;
 
     // parse all objects
     pugi::xml_node node_objects = xmlNode.child("objects");

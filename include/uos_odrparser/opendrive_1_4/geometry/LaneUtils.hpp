@@ -13,7 +13,7 @@
 #include "uos_odrparser/opendrive_1_4/types.hpp"
 #include <cmath>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace geometry
 {
@@ -46,4 +46,4 @@ void checkAddPredecessor(Lane &lane, Lane const &otherLane);
 Id laneId(int roadId, int laneSectionIndex, int laneIndex);
 Id laneId(int roadId, uint64_t laneSectionIndex, int laneIndex);
 } // namespace geometry
-} // namespace opendrive
+} // namespace opendrive_1_4

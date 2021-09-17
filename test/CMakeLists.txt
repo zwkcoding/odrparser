@@ -1,10 +1,12 @@
 # add tracks directory
-add_definitions(-DTRACKS_DIR=\"${PROJECT_SOURCE_DIR}/test/resources/\")
+add_definitions(-DTRACKS_DIR=\"${PROJECT_SOURCE_DIR}/test/test_files/\")
 
 # create test executable
 set(EXEC_NAME odr_parser_test)
 set(TEST_SOURCES
+    opendrive_1_4/ParseOpenDrive14Tests.cpp
     main.cpp)
+# aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/opendrive_1_4/geometry SRC_ODR_1_4_GEOMETRY)
 
 add_executable(${EXEC_NAME} ${TEST_SOURCES})
 target_include_directories(${EXEC_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)

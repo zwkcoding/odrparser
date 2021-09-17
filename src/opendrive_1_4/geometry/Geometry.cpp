@@ -17,7 +17,7 @@
 #include <stdexcept>
 #include <uos_odrparser/opendrive_1_4/types.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace geometry
 {
@@ -194,4 +194,4 @@ const DirectedPoint GeometryParamPoly3::PosFromDist(const double dist) const
 }
 
 } // namespace geometry
-} // namespace opendrive
+} // namespace opendrive_1_4

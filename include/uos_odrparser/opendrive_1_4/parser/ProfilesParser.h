@@ -16,7 +16,7 @@
 
 #include <pugixml.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
@@ -24,19 +24,20 @@ namespace parser
 class ProfilesParser
 {
 private:
-    void ParseElevation(const pugi::xml_node &xmlNode,
-                        opendrive::ElevationProfileSet &out_elevation_profile);
-
     void
-    ParseShape(const pugi::xml_node &xmlNode,
-               opendrive::LateralProfileShapeSetMap &out_lateral_profile_shape);
+    ParseElevation(const pugi::xml_node &xmlNode,
+                   opendrive_1_4::ElevationProfileSet &out_elevation_profile);
+
+    void ParseShape(
+        const pugi::xml_node &xmlNode,
+        opendrive_1_4::LateralProfileShapeSetMap &out_lateral_profile_shape);
     void ParseSuperelevation(
         const pugi::xml_node &xmlNode,
         LateralProfileSuperelevationSet &out_lateral_profile_superelevation);
 
 public:
     static void Parse(const pugi::xml_node &xmlNode,
-                      opendrive::RoadProfiles &out_road_profiles);
+                      opendrive_1_4::RoadProfiles &out_road_profiles);
 };
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

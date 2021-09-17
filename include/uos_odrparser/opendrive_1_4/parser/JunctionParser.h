@@ -16,7 +16,7 @@
 
 #include <pugixml.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
@@ -26,16 +26,17 @@ class JunctionParser
 private:
     void ParseConnection(
         const pugi::xml_node &xmlNode,
-        std::vector<opendrive::JunctionConnection> &out_connections,
-        std::vector<opendrive::JunctionController> &out_controllers);
+        std::vector<opendrive_1_4::JunctionConnection> &out_connections,
+        std::vector<opendrive_1_4::JunctionController> &out_controllers);
 
-    void ParseLaneLink(const pugi::xml_node &xmlNode,
-                       std::vector<opendrive::JunctionLaneLink> &out_lane_link);
+    void
+    ParseLaneLink(const pugi::xml_node &xmlNode,
+                  std::vector<opendrive_1_4::JunctionLaneLink> &out_lane_link);
 
 public:
     static void Parse(const pugi::xml_node &xmlNode,
-                      std::vector<opendrive::Junction> &out_junction);
+                      std::vector<opendrive_1_4::Junction> &out_junction);
 };
 
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

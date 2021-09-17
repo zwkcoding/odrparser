@@ -22,7 +22,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 
 enum class GeometryType : unsigned int
@@ -773,5 +773,7 @@ struct OpenDriveData
     LaneMap laneMap;
     LandmarkMap landmarks;
     std::unordered_map<int, std::vector<Id>> intersectionLaneIds;
+
+    std::map<std::string, std::vector<RoadInformation>::size_type> roads_map;
 };
-} // namespace opendrive
+} // namespace opendrive_1_4

@@ -18,34 +18,54 @@
 #include <limits>
 #include <vector>
 
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#include <proj_api.h>
+#include <proj.h> // version later v7.0
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace parser
 {
 
-::opendrive::geom::GeoLocation
+::opendrive_1_4::geom::GeoLocation
 GeoReferenceParser::Parse(const std::string &geo_reference_string)
 {
-    ::opendrive::geom::GeoLocation result{
+    bool is_valid_proj;
+    PJ_CONTEXT *C;
+    PJ *P;
+    PJ *P_for_GIS;
+    PJ_COORD refPoint;
+    ::opendrive_1_4::geom::GeoLocation result{
         std::numeric_limits<double>::quiet_NaN(),
         std::numeric_limits<double>::quiet_NaN(), 0.0, ""};
+
     result.projection = geo_reference_string;
 
-    auto projPtr = pj_init_plus(geo_reference_string.c_str());
-
-    if (projPtr != nullptr)
-    {
-        projXY refPoint;
-        refPoint.u = 0;
-        refPoint.v = 0;
-        const auto geoPoint = pj_inv(refPoint, projPtr);
-        result.longitude = geoPoint.u * RAD_TO_DEG;
-        result.latitude = geoPoint.v * RAD_TO_DEG;
-    }
+    // https://proj.org/development/quickstart.html
+    /* or you may set C=PJ_DEFAULT_CTX if you are sure you will     */
+    /* use PJ objects from only one thread                          */
+    C = proj_context_create();
+    P = proj_create_crs_to_crs(C, "EPSG:4326", geo_reference_string.c_str(),
+                               NULL);
+    is_valid_proj = true;
+    if (0 == P)
+        is_valid_proj = false;
     else
+    {
+        /* This will ensure that the order of coordinates for the input CRS */
+        /* will be longitude, latitude, whereas EPSG:4326 mandates latitude, */
+        /* longitude */
+        P_for_GIS = proj_normalize_for_visualization(C, P);
+        if (0 == P_for_GIS)
+        {
+            is_valid_proj = false;
+            fprintf(stderr, "Oops\n");
+        }
+        else
+        {
+            proj_destroy(P);
+            P = P_for_GIS;
+        }
+    }
+    if (!is_valid_proj)
     {
         std::vector<std::string> geo_ref_splitted;
         boost::split(geo_ref_splitted, geo_reference_string,
@@ -69,9 +89,23 @@ GeoReferenceParser::Parse(const std::string &geo_reference_string)
             }
         }
     }
+    else
+    {
+        refPoint.enu.e = 0;
+        refPoint.enu.n = 0;
+        refPoint.enu.u = 0;
+        const auto geoPoint = proj_trans(P, PJ_INV, refPoint);
+        result.longitude = geoPoint.lp.lam;
+        result.latitude = geoPoint.lp.phi;
+
+        /* Clean up */
+        proj_destroy(P);
+        /* may be omitted in the single threaded case */
+        proj_context_destroy(C);
+    }
 
     return result;
 }
 
 } // namespace parser
-} // namespace opendrive
+} // namespace opendrive_1_4

@@ -16,7 +16,7 @@
 #include <boost/array.hpp>
 #include <boost/math/tools/rational.hpp>
 
-namespace opendrive
+namespace opendrive_1_4
 {
 namespace geometry
 {
@@ -206,4 +206,4 @@ double evalPoly3(std::set<T> const &sOffsetPoly3Set, double s)
 }
 
 } // namespace geometry
-} // namespace opendrive
+} // namespace opendrive_1_4
