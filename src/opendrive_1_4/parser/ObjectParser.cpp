@@ -25,6 +25,7 @@ void opendrive_1_4::parser::ObjectParser::Parse(
         for (pugi::xml_node node_object : node_objects.children("object"))
         {
             // type Crosswalk
+            gRoadObjects.id = node_object.attribute("id").as_int();
             gRoadObjects.type = node_object.attribute("type").as_string();
             gRoadObjects.name = node_object.attribute("name").as_string();
             if (gRoadObjects.type == "crosswalk")

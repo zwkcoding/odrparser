@@ -59,9 +59,14 @@ double getRoadLength(const RoadInformation &road)
     return road.attributes.length;
 }
 
-const std::vector<RoadTypeInfo> getRoadType(const RoadInformation &road)
+const std::vector<RoadTypeInfo> &getRoadType(const RoadInformation &road)
 {
     return road.attributes.type;
+}
+
+const std::vector<RoadSpeed> &getRoadSpeed(const RoadInformation &road)
+{
+    return road.attributes.speed;
 }
 
 } // namespace opendrive_1_4

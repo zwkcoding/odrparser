@@ -42,6 +42,8 @@ int getRoadJunctionId(const RoadInformation &road);
 
 double getRoadLength(const RoadInformation &road);
 
-const std::vector<RoadTypeInfo> getRoadType(const RoadInformation &road);
+const std::vector<RoadTypeInfo> &getRoadType(const RoadInformation &road);
+
+const std::vector<RoadSpeed> &getRoadSpeed(const RoadInformation &road);
 
 } // namespace opendrive_1_4

@@ -22,6 +22,11 @@
 #include <unordered_map>
 #include <vector>
 
+#include <cassert>
+
+#define ODP_ASSERT(x, ...) assert(x)
+#define ODP_UNUSED(x) (void)(x)
+
 namespace opendrive_1_4
 {
 
@@ -264,6 +269,50 @@ struct OffsetPoly3
     {
         return start_offset < other.start_offset;
     }
+
+    /**
+        * @constructor
+        */
+    OffsetPoly3(double s, double a_, double b_, double c_, double d_)
+    {
+        start_offset = s;
+        a = a_;
+        b = b_;
+        c = c_;
+        d = d_;
+    }
+
+    /**
+        * @constructor
+        */
+    OffsetPoly3() : OffsetPoly3(0, 0, 0, 0, 0) {}
+
+    static bool floatCompare(double f1, double f2)
+    {
+        static constexpr auto epsilon = 1.0e-09f;
+        if (std::fabs(f1 - f2) <= epsilon)
+            return true;
+        return std::fabs(f1 - f2) <=
+               epsilon * std::max(std::fabs(f1), std::fabs(f2));
+    }
+
+    /**
+        * @comparison
+        */
+    friend bool operator==(const OffsetPoly3 &lhs, const OffsetPoly3 &rhs)
+    {
+        return floatCompare(lhs.start_offset, rhs.start_offset) &&
+               floatCompare(lhs.a, rhs.a) && floatCompare(lhs.b, rhs.b) &&
+               floatCompare(lhs.c, rhs.c) && floatCompare(lhs.d, rhs.d);
+    }
+
+    /**
+        * @comparison
+        */
+    friend bool operator!=(const OffsetPoly3 &lhs, const OffsetPoly3 &rhs)
+    {
+        return !(lhs == rhs);
+    }
 };
 
 struct LaneWidth : public OffsetPoly3
@@ -444,6 +493,7 @@ struct LaneSection
 {
     double start_position{0.};
     double end_position{0.}; // extended value
+    bool is_single_side;
     std::vector<LaneInfo> left, center, right;
 };
 
@@ -607,6 +657,7 @@ struct RoadOutline
 
 struct RoadObjects
 {
+    int id{-1};
     std::string type{""};
     std::string name{""};
     RoadOutline outline;

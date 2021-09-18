@@ -132,6 +132,7 @@ bool toBool(std::string const &boolString, bool defaultValue)
 void LaneParser::ParseLane(const pugi::xml_node &xmlNode,
                            std::vector<opendrive_1_4::LaneInfo> &out_lane)
 {
+    // record: lane; parent: <left> / <center> / <right> instances: 1+;
     for (pugi::xml_node lane = xmlNode.child("lane"); lane;
          lane = lane.next_sibling("lane"))
     {
@@ -145,10 +146,9 @@ void LaneParser::ParseLane(const pugi::xml_node &xmlNode,
 
         ParseLaneSpeed(lane, currentLane.lane_speed);
         ParseLaneWidth(lane, currentLane.lane_width);
-        ParseLaneLink(lane.child("link"), currentLane.link);
+        ParseLaneLink(lane, currentLane.link);
         ParseLaneRoadMark(lane, currentLane.road_marker);
-        ParseLaneRoadMarkType(lane.child("roadMark"),
-                              currentLane.road_marker_type);
+        ParseLaneRoadMarkType(lane, currentLane.road_marker_type);
         ParseLaneRoadMarkLine(lane, currentLane.road_marker_line);
         ParseLaneMaterial(lane, currentLane.lane_materials);
         ParseLaneBorder(lane, currentLane.lane_border);
@@ -164,6 +164,7 @@ void LaneParser::ParseLane(const pugi::xml_node &xmlNode,
 void LaneParser::ParseLaneWidth(const pugi::xml_node &xmlNode,
                                 opendrive_1_4::LaneWidthSet &out_lane_width)
 {
+    // record: lane width; instances: 1+ (if no <border> entry is present);
     for (pugi::xml_node laneWidth = xmlNode.child("width"); laneWidth;
          laneWidth = laneWidth.next_sibling("width"))
     {
@@ -178,7 +179,7 @@ void LaneParser::ParseLaneWidth(const pugi::xml_node &xmlNode,
         laneWidthInfo.c = std::stod(laneWidth.attribute("c").value());
         laneWidthInfo.d = std::stod(laneWidth.attribute("d").value());
 
-        out_lane_width.insert(laneWidthInfo);
+        out_lane_width.insert(std::move(laneWidthInfo));
     }
 }
 
@@ -186,8 +187,16 @@ void LaneParser::ParseLaneLink(
     const pugi::xml_node &xmlNode,
     std::unique_ptr<opendrive_1_4::LaneLink> &out_lane_link)
 {
-    const pugi::xml_node predecessorNode = xmlNode.child("predecessor");
-    const pugi::xml_node successorNode = xmlNode.child("successor");
+    const pugi::xml_node linkNode = xmlNode.child("link");
+    // Only when lanes end at a junction or have no physical link,
+    // this record should be omitted
+    if (!linkNode)
+    {
+        return;
+    }
+
+    const pugi::xml_node predecessorNode = linkNode.child("predecessor");
+    const pugi::xml_node successorNode = linkNode.child("successor");
 
     out_lane_link = (predecessorNode || successorNode)
                         ? std::make_unique<opendrive_1_4::LaneLink>()
@@ -222,6 +231,7 @@ void LaneParser::ParseLaneRoadMark(
     const pugi::xml_node &xmlNode,
     std::vector<opendrive_1_4::LaneRoadMark> &out_lane_mark)
 {
+    // record: road mark; instances: 0+;
     for (pugi::xml_node road_mark = xmlNode.child("roadMark"); road_mark;
          road_mark = road_mark.next_sibling("roadMark"))
     {
@@ -263,7 +273,7 @@ void LaneParser::ParseLaneRoadMark(
             roadMarker.lane_change = road_mark.attribute("laneChange").value();
         }
 
-        out_lane_mark.emplace_back(roadMarker);
+        out_lane_mark.emplace_back(std::move(roadMarker));
     }
 }
 
@@ -271,6 +281,7 @@ void LaneParser::ParseLaneSpeed(
     const pugi::xml_node &xmlNode,
     std::vector<opendrive_1_4::LaneSpeed> &out_lane_speed)
 {
+    // record: lane speed; instances: 0+;
     for (pugi::xml_node laneSpeed = xmlNode.child("speed"); laneSpeed;
          laneSpeed = laneSpeed.next_sibling("speed"))
     {
@@ -281,7 +292,7 @@ void LaneParser::ParseLaneSpeed(
         lane_speed.max_speed = std::stod(laneSpeed.attribute("max").value());
         lane_speed.unit = laneSpeed.attribute("unit").value();
 
-        out_lane_speed.emplace_back(lane_speed);
+        out_lane_speed.emplace_back(std::move(lane_speed));
     }
 }
 
@@ -289,12 +300,14 @@ void LaneParser::Parse(const pugi::xml_node &xmlNode, Lanes &out_lanes)
 {
     LaneParser laneParser;
 
+    // record: laneOffset; instances: 0+;
     for (pugi::xml_node laneSection = xmlNode.child("laneOffset"); laneSection;
          laneSection = laneSection.next_sibling("laneOffset"))
     {
         laneParser.ParseLaneOffset(laneSection, out_lanes.lane_offset);
     }
 
+    // record: laneSection; instances: 1+;
     for (pugi::xml_node laneSection = xmlNode.child("laneSection"); laneSection;
          laneSection = laneSection.next_sibling("laneSection"))
     {
@@ -303,6 +316,18 @@ void LaneParser::Parse(const pugi::xml_node &xmlNode, Lanes &out_lanes)
         // until we know more, we set end to start
         laneSec.end_position = laneSec.start_position;
 
+        laneSec.is_single_side =
+            toBool(laneSection.attribute("singleSide").value(), false);
+
+        // record: left/center/right lanes within a lane section; instances: 1;
+        if (laneSection.child("left").empty() &&
+            laneSection.child("center").empty() &&
+            laneSection.child("right").empty())
+        {
+            ODP_ASSERT(
+                false,
+                "At least one entry(left, center or right) must be present!");
+        }
         pugi::xml_node lane = laneSection.child("left");
         laneParser.ParseLane(lane, laneSec.left);
 
@@ -321,45 +346,46 @@ void LaneParser::ParseLaneRoadMarkLine(
     std::vector<opendrive_1_4::LaneRoadMarkLine> &out_lane_mark_line)
 {
     LaneRoadMarkLine roadMarkerLine;
+    // record: road mark line; instances: 1+;
     for (pugi::xml_node road_mark_line =
              xmlNode.child("roadMark").child("type").child("line");
          road_mark_line;
          road_mark_line = road_mark_line.next_sibling("roadMark"))
     {
-        if (road_mark_line.attribute("length") != nullptr)
+        if (road_mark_line.attribute("length"))
         {
             roadMarkerLine.length =
                 std::stod(road_mark_line.attribute("length").value());
         }
 
-        if (road_mark_line.attribute("space") != nullptr)
+        if (road_mark_line.attribute("space"))
         {
             roadMarkerLine.space =
                 std::stod(road_mark_line.attribute("space").value());
         }
 
-        if (road_mark_line.attribute("t") != nullptr)
+        if (road_mark_line.attribute("tOffset"))
         {
             roadMarkerLine.t = std::stod(road_mark_line.attribute("t").value());
         }
 
-        if (road_mark_line.attribute("sOffset") != nullptr)
+        if (road_mark_line.attribute("sOffset"))
         {
             roadMarkerLine.start_offset =
                 std::stod(road_mark_line.attribute("sOffset").value());
         }
 
-        if (road_mark_line.attribute("rule") != nullptr)
+        if (road_mark_line.attribute("rule"))
         {
             roadMarkerLine.rule = road_mark_line.attribute("rule").value();
         }
 
-        if (road_mark_line.attribute("width") != nullptr)
+        if (road_mark_line.attribute("width"))
         {
             roadMarkerLine.width =
                 std::stod(road_mark_line.attribute("width").value());
         }
-        out_lane_mark_line.emplace_back(roadMarkerLine);
+        out_lane_mark_line.emplace_back(std::move(roadMarkerLine));
     }
 }
 
@@ -368,18 +394,19 @@ void LaneParser::ParseLaneRoadMarkType(
     std::vector<opendrive_1_4::LaneRoadMarkType> &out_lane_mark_type)
 {
     LaneRoadMarkType roadMarkerType;
-    pugi::xml_node road_mark_type = xmlNode.child("type");
+    pugi::xml_node road_mark_type = xmlNode.child("roadMark").child("type");
 
+    // record: road mark type; instances: 0..1;
     if (road_mark_type)
     {
         roadMarkerType.name = road_mark_type.attribute("name").value();
-        if (road_mark_type.attribute("width") != nullptr)
+        if (road_mark_type.attribute("width"))
         {
             roadMarkerType.width =
                 std::stod(road_mark_type.attribute("width").value());
         }
     }
-    out_lane_mark_type.emplace_back(roadMarkerType);
+    out_lane_mark_type.emplace_back(std::move(roadMarkerType));
 }
 
 void LaneParser::ParseLaneMaterial(
@@ -406,6 +433,7 @@ void LaneParser::ParseLaneBorder(
     const pugi::xml_node &xmlNode,
     std::vector<opendrive_1_4::LaneBorder> &out_lane_border)
 {
+    // record: lane border; instances: 1+ (if no <width> entry is present)
     for (pugi::xml_node laneBorder : xmlNode.child("border"))
     {
         LaneBorder laneBorderInfo;
@@ -417,7 +445,7 @@ void LaneParser::ParseLaneBorder(
         laneBorderInfo.c = std::stod(laneBorder.attribute("c").value());
         laneBorderInfo.d = std::stod(laneBorder.attribute("d").value());
 
-        out_lane_border.emplace_back(laneBorderInfo);
+        out_lane_border.emplace_back(std::move(laneBorderInfo));
     }
 }
 

@@ -83,7 +83,7 @@ bool OpenDriveParser::Parse(const char *xml,
     out_open_drive_data.geoReference = odp::GeoReferenceParser::Parse(
         xmlDoc.child("OpenDRIVE").child("header").child_value("geoReference"));
 
-    // Extracting road information
+    // record: road; instances: 1+;
     road_count = 0;
     for (pugi::xml_node road = xmlDoc.child("OpenDRIVE").child("road"); road;
          road = road.next_sibling("road"))
@@ -98,7 +98,7 @@ bool OpenDriveParser::Parse(const char *xml,
         openDriveRoadInformation.attributes.junction =
             road.attribute("junction").as_int();
 
-        // types
+        // record: road type; instances: 0+;
         for (pugi::xml_node node_type : road.children("type"))
         {
             RoadTypeInfo type{0.0, ""};
@@ -107,7 +107,7 @@ bool OpenDriveParser::Parse(const char *xml,
             type.type = node_type.attribute("type").as_string();
             openDriveRoadInformation.attributes.type.emplace_back(type);
 
-            // speed type
+            // record: speed; instances: 0..1;
             pugi::xml_node speed_node = node_type.child("speed");
             if (speed_node)
             {
@@ -119,23 +119,28 @@ bool OpenDriveParser::Parse(const char *xml,
             }
         }
 
-        ///////////////////////////////////////////////////////////////////////////////
+        // record: road plan view; instances: 1;
+        odp::GeometryParser::Parse(
+            road.child("planView"),
+            openDriveRoadInformation.geometry_attributes);
 
-        odp::ObjectParser::Parse(road, openDriveRoadInformation.road_objects);
+        // record: road elevation/lateral profile; instances: 0..1;
         odp::ProfilesParser::Parse(road,
                                    openDriveRoadInformation.road_profiles);
 
+        // record: lanes; instances: 1;
+        odp::LaneParser::Parse(road.child("lanes"),
+                               openDriveRoadInformation.lanes);
+
+        odp::ObjectParser::Parse(road, openDriveRoadInformation.road_objects);
+
+        // record: road link; instances: 0..1; doc: 5.3.2;
         odp::RoadLinkParser::Parse(road.child("link"),
                                    openDriveRoadInformation.road_link);
         odp::TrafficSignalsParser::Parse(
             road.child("signals"), openDriveRoadInformation.traffic_signals,
             openDriveRoadInformation.traffic_signal_references);
 
-        odp::LaneParser::Parse(road.child("lanes"),
-                               openDriveRoadInformation.lanes);
-        odp::GeometryParser::Parse(
-            road.child("planView"),
-            openDriveRoadInformation.geometry_attributes);
         odp::ControllerParser::Parse(road, out_open_drive_data.controllers,
                                      out_open_drive_data.controllersignals);
 

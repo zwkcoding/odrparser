@@ -12,18 +12,12 @@
 
 #include "uos_odrparser/opendrive_1_4/parser/GeometryParser.h"
 
-#include <cassert>
-
-#define ODP_ASSERT(x, ...) assert(x)
-#define ODP_UNUSED(x) (void)(x)
-
 void opendrive_1_4::parser::GeometryParser::ParseArc(
     const pugi::xml_node &xmlNode,
     opendrive_1_4::GeometryAttributesArc *out_geometry_arc)
 {
     out_geometry_arc->type = opendrive_1_4::GeometryType::ARC;
-    out_geometry_arc->curvature =
-        std::stod(xmlNode.attribute("curvature").value());
+    out_geometry_arc->curvature = xmlNode.attribute("curvature").as_double();
 }
 
 void opendrive_1_4::parser::GeometryParser::ParseLine(
@@ -39,10 +33,9 @@ void opendrive_1_4::parser::GeometryParser::ParseSpiral(
     opendrive_1_4::GeometryAttributesSpiral *out_geometry_spiral)
 {
     out_geometry_spiral->type = opendrive_1_4::GeometryType::SPIRAL;
-    out_geometry_spiral->curve_end =
-        std::stod(xmlNode.attribute("curvEnd").value());
+    out_geometry_spiral->curve_end = xmlNode.attribute("curvEnd").as_double();
     out_geometry_spiral->curve_start =
-        std::stod(xmlNode.attribute("curvStart").value());
+        xmlNode.attribute("curvStart").as_double();
 }
 
 void opendrive_1_4::parser::GeometryParser::ParsePoly3(
@@ -79,18 +72,20 @@ void opendrive_1_4::parser::GeometryParser::Parse(
 {
     opendrive_1_4::parser::GeometryParser gometry_parser;
 
+    // record: geometry; instances: 1+;
     for (pugi::xml_node roadGeometry = xmlNode.child("geometry"); roadGeometry;
          roadGeometry = roadGeometry.next_sibling("geometry"))
     {
         std::unique_ptr<opendrive_1_4::GeometryAttributes> geometry_attributes;
         std::string firstChildName(roadGeometry.first_child().name());
 
+        // record: geometric element; instances: 1;
         if (firstChildName == "arc")
         {
             geometry_attributes =
                 std::make_unique<opendrive_1_4::GeometryAttributesArc>();
             gometry_parser.ParseArc(
-                roadGeometry.first_child(),
+                roadGeometry.child("arc"),
                 static_cast<opendrive_1_4::GeometryAttributesArc *>(
                     geometry_attributes.get()));
         }
@@ -99,7 +94,7 @@ void opendrive_1_4::parser::GeometryParser::Parse(
             geometry_attributes =
                 std::make_unique<opendrive_1_4::GeometryAttributesLine>();
             gometry_parser.ParseLine(
-                roadGeometry.first_child(),
+                roadGeometry.child("line"),
                 static_cast<opendrive_1_4::GeometryAttributesLine *>(
                     geometry_attributes.get()));
         }
@@ -108,7 +103,7 @@ void opendrive_1_4::parser::GeometryParser::Parse(
             geometry_attributes =
                 std::make_unique<opendrive_1_4::GeometryAttributesSpiral>();
             gometry_parser.ParseSpiral(
-                roadGeometry.first_child(),
+                roadGeometry.child("spiral"),
                 static_cast<opendrive_1_4::GeometryAttributesSpiral *>(
                     geometry_attributes.get()));
         }
@@ -117,7 +112,7 @@ void opendrive_1_4::parser::GeometryParser::Parse(
             geometry_attributes =
                 std::make_unique<opendrive_1_4::GeometryAttributesPoly3>();
             gometry_parser.ParsePoly3(
-                roadGeometry.first_child(),
+                roadGeometry.child("poly3"),
                 static_cast<opendrive_1_4::GeometryAttributesPoly3 *>(
                     geometry_attributes.get()));
         }
@@ -126,7 +121,7 @@ void opendrive_1_4::parser::GeometryParser::Parse(
             geometry_attributes =
                 std::make_unique<opendrive_1_4::GeometryAttributesParamPoly3>();
             gometry_parser.ParseParamPoly3(
-                roadGeometry.first_child(),
+                roadGeometry.child("paramPoly3"),
                 static_cast<opendrive_1_4::GeometryAttributesParamPoly3 *>(
                     geometry_attributes.get()));
         }

@@ -4,7 +4,9 @@
     <geoReference><![CDATA[+proj=tmerc +lat_0=0 +lon_0=9 +k=0.9996 +x_0=500000 +y_0=0 +datum=WGS84 +units=m +no_defs]]></geoReference>
   </header>
   <road name="" length="1.724447338294e+03" id="2311000" junction="-1">
-    <type s="0.0" type="motorway" />
+    <type s="0.0" type="motorway" >
+        <speed max="40" unit="km/h"/>
+    </type>
     <planView>
       <geometry s="0.000000000000e+00" x="6.961205248677e+05" y="5.347042677392e+06" hdg="4.423314246392e+00" length="2.874078777576e+02">
         <paramPoly3 aU="-0.000000000000e+00" bU="1.000000000000e+00" cU="-2.864238929279e-11" dU="9.895389049440e-14" aV="0.000000000000e+00" bV="2.775557561563e-16" cV="-1.284829717715e-07" dV="3.576738398807e-10" pRange="arcLength" />
