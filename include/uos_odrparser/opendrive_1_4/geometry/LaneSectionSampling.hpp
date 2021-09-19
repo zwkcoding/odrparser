@@ -62,6 +62,7 @@ private:
 
     RoadInformation const &roadInfo;
     CenterLine const &centerLine;
+    // sLane index list
     std::list<LaneSectionProfile> profiles;
 };
 

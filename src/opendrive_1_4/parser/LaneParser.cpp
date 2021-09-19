@@ -313,7 +313,8 @@ void LaneParser::Parse(const pugi::xml_node &xmlNode, Lanes &out_lanes)
     {
         LaneSection laneSec;
         laneSec.start_position = std::stod(laneSection.attribute("s").value());
-        // until we know more, we set end to start
+        // until we know more, we set end to start.
+        // set function: calculateLaneSectionBounds
         laneSec.end_position = laneSec.start_position;
 
         laneSec.is_single_side =

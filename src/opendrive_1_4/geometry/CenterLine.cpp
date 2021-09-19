@@ -84,6 +84,7 @@ std::list<double> CenterLine::samplingPoints() const
             else
             {
                 double c = fabs(arc->GetCurvature());
+                // what is the logic of calculating dsmax ???
                 double dsmax =
                     2.0 / c * acos(1.0 - c * Geometry::cMaxSamplingError);
                 int segments = static_cast<int>((*it)->GetLength() / dsmax);

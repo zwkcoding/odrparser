@@ -41,6 +41,7 @@ bool isInvalidLaneSection(::opendrive_1_4::LaneSection const &laneSection)
 void calculateLaneSectionBounds(
     std::vector<::opendrive_1_4::LaneSection> &laneSections, double totalLength)
 {
+    // lane section listed in ascending order.
     for (auto it = laneSections.begin(); it != laneSections.end(); it++)
     {
         if (it + 1 == laneSections.end())
@@ -122,7 +123,7 @@ void generateTrafficSignal(TrafficSignalInformation &trafficSignalInfo,
         landmark.id = (static_cast<int>(landmarks.size())) + 1;
         trafficSignalInfo.id = landmark.id;
     }
-    landmarks[landmark.id] = landmark;
+    landmarks[landmark.id] = std::move(landmark);
 }
 
 std::vector<LaneSection>::iterator getLaneSection(double s,
@@ -178,7 +179,8 @@ void addTrafficReferenceToLanes(
             {
                 signalReference.inLaneOrientation = false;
             }
-            laneMap[id].signalReferences.emplace_back(signalReference);
+            laneMap[id].signalReferences.emplace_back(
+                std::move(signalReference));
         }
     }
     for (auto &laneInfo : laneSectionIt->left)
@@ -201,7 +203,8 @@ void addTrafficReferenceToLanes(
             {
                 signalReference.inLaneOrientation = true;
             }
-            laneMap[id].signalReferences.emplace_back(signalReference);
+            laneMap[id].signalReferences.emplace_back(
+                std::move(signalReference));
         }
     }
 }
@@ -271,7 +274,8 @@ bool initializeLaneMap(opendrive_1_4::OpenDriveData &mapData)
         {
             for (auto const &laneInfo : laneSections[k].left)
             {
-                auto id = laneId(roadId, k + 1, laneInfo.attributes.id);
+                auto id = laneId(roadId, static_cast<int>(k) + 1,
+                                 laneInfo.attributes.id);
                 if (!addLane(mapData, roadInfo, laneInfo, id))
                 {
                     ok = false;
@@ -313,6 +317,7 @@ bool generateRoadGeometry(RoadInformation &roadInfo,
     }
     sortLanesByIndex(laneSections);
 
+    // update lanemarks, laneMap
     addTrafficSignals(roadInfo, centerLine, mapData);
 
     LaneSectionSampling laneSectionSampling(roadInfo, centerLine);
@@ -411,7 +416,7 @@ std::vector<ParametricSpeed> parametricSpeed(double s0, double s1,
         {
             parametricSpeed.end = (*(it + 1) - s0) / length;
         }
-        roadParametricSpeed.push_back(parametricSpeed);
+        roadParametricSpeed.push_back(std::move(parametricSpeed));
     }
     return roadParametricSpeed;
 }
@@ -1134,6 +1139,7 @@ bool convertToGeoPoints(opendrive_1_4::OpenDriveData &mapData)
 bool GenerateGeometry(opendrive_1_4::OpenDriveData &open_drive_data,
                       double const overlapMargin)
 {
+    // set laneMap, intersectionLaneIds
     bool ok = initializeLaneMap(open_drive_data);
 
     for (auto &roadInfo : open_drive_data.roads)

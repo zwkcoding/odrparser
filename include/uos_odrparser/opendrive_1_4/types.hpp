@@ -500,6 +500,7 @@ struct LaneSection
 struct Lanes
 {
     LaneOffsetSet lane_offset;
+    // TODO: use set is better
     std::vector<LaneSection> lane_sections;
 };
 
@@ -577,7 +578,7 @@ struct TrafficSignalInformation
 
     double zoffset{0.}; // z offset from track level
     double value{0.};   // value of the signal (e.g. speed,
-                        // mass � depending on type)
+                        // mass - depending on type)
 
     std::string name{""};        // name of the signal (e.g. gfx bead
                                  // name)
@@ -810,6 +811,7 @@ struct Landmark
 
 using LaneMap = std::unordered_map<Id, Lane>;
 using LandmarkMap = std::unordered_map<int, Landmark>;
+using JunctionLanesMap = std::unordered_map<int, std::vector<Id>>;
 
 struct OpenDriveData
 {
@@ -823,7 +825,7 @@ struct OpenDriveData
 
     LaneMap laneMap;
     LandmarkMap landmarks;
-    std::unordered_map<int, std::vector<Id>> intersectionLaneIds;
+    JunctionLanesMap intersectionLaneIds;
 
     std::map<std::string, std::vector<RoadInformation>::size_type> roads_map;
 };

@@ -179,6 +179,7 @@ bool LaneSectionSampling::addSamples(
         profiles.push_back(profile);
     }
 
+    // question: Must we deal with profiles for all sections in one road ?
     // now refine sampling points according to actual points influenced by
     // laneWidth changes and lateral_profile
     auto iter = profiles.begin();
@@ -378,6 +379,7 @@ LaneSectionSampling::interpolateProfile(LaneSectionProfile const &start,
     {
         auto const findEnd =
             end.laneBorderPoints.find(startLaneBorderPoint.first);
+        // guarantee to interpolate within same lane
         if (findEnd != end.laneBorderPoints.end())
         {
             LaneBorderPoint point;
